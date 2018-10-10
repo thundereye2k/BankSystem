@@ -2,6 +2,7 @@ package com.twiistrz.banksystem.commands;
 
 import com.twiistrz.banksystem.BankSystem;
 import java.util.List;
+import java.util.UUID;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -74,6 +75,10 @@ public class BankCommand implements CommandExecutor {
                             .replace("%total%", totalBalance.toString())
                         ));
                     }
+                    
+                    UUID id = p.getUniqueId();
+                    String uid = id.toString();
+                    p.sendMessage(uid);
                     return true;
                 }
                 
@@ -124,12 +129,17 @@ public class BankCommand implements CommandExecutor {
                                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("deposit-zero")));
                                 return true;
                             }
-
+                            
                             // Deposit money
-                            EconomyResponse r = BankSystem.econ.withdrawPlayer(p, money);
-                            if (r.transactionSuccess()) {
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("deposit").replace("%money%", args[1])));
-                                return true;
+                            if (money <= BankSystem.econ.getBalance(p)) {
+                                EconomyResponse r = BankSystem.econ.withdrawPlayer(p, money);
+                                if (r.transactionSuccess()) {
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("deposit").replace("%money%", args[1])));
+                                    return true;
+                                } else {
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("not-enough-money")));
+                                    return true;
+                                }
                             } else {
                                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("not-enough-money")));
                                 return true;

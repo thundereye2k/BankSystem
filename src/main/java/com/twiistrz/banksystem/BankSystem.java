@@ -2,8 +2,6 @@ package com.twiistrz.banksystem;
 
 import com.twiistrz.banksystem.commands.BankCommand;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -11,31 +9,34 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author Twiistrz
  */
 public class BankSystem extends JavaPlugin {
-
+    
+    private static BankSystem instance;
+    
     @Override
     public void onEnable() {
-        PluginDescriptionFile plFile = getDescription();
-        Logger logger = getLogger();
-        logger.log(Level.INFO, "Enabled {1} v{2}!", new Object[]{plFile.getName(), plFile.getVersion()});
-
-        registerConfig();
-        registerCommand();
+        instance = this;
+        saveDefaultConfig();
+        getLogger().log(Level.INFO, "Enabled {0} v{1}!", 
+            new Object[]{
+                getDescription().getName(),
+                getDescription().getVersion()
+            });
+        if (!(getDescription().getVersion().equals(getConfig().getString("version")))) {
+            getLogger().log(Level.WARNING, "Using outdated version of config file!");
+        }
+        getCommand("bank").setExecutor(new BankCommand(this));
     }
-
+    
     @Override
     public void onDisable() {
-        PluginDescriptionFile plFile = getDescription();
-        Logger logger = getLogger();
-        
-        logger.log(Level.INFO, "Disabled {1} v{2}!", new Object[]{plFile.getName(), plFile.getVersion()});
+        getLogger().log(Level.INFO, "Disabled {0} v{1}!", 
+            new Object[]{
+                getDescription().getName(),
+                getDescription().getVersion()
+            });
     }
-
-    private void registerConfig() {
-        getConfig().options().copyDefaults(true);
-        saveConfig();
-    }
-
-    private void registerCommand() {
-        this.getCommand("bank").setExecutor(new BankCommand(this));
+    
+    public static BankSystem getInstance() {
+        return instance;
     }
 }

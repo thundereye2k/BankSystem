@@ -23,12 +23,15 @@ public class BankCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String prefix = plugin.getConfig().getString("prefix");
+        List<String> helpMessages = plugin.getConfig().getStringList("help");
+        List<String> balanceMessages = plugin.getConfig().getStringList("balance");
         
         if (!(sender instanceof Player)) {
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("reload")) {
-                    pluginReload();
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&aConfig reloaded! Author: Twiistrz"));
+                    plugin.reloadConfig();
+                    plugin.saveDefaultConfig();
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&aReloaded BankSystem's configuration file."));
                     return true;
                 } else if (args[0].equalsIgnoreCase("balance") || args[0].equalsIgnoreCase("withdraw") || args[0].equalsIgnoreCase("deposit")) {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("players-only")));
@@ -36,52 +39,87 @@ public class BankCommand implements CommandExecutor {
                 }
             }
             
-            List<String> helpMsgs = plugin.getConfig().getStringList("help");
-            for(String helpMsg : helpMsgs) {
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMsg));
+            for (String helpMessage : helpMessages) {
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMessage));
             }
             return true;
         }
-
+        
         Player p = (Player) sender;
-
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("reload")) {
-                if (p.hasPermission("mcpz.banksystem.reload") || p.hasPermission("mcpz.banksystem.admin")) {
-                    pluginReload();
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&aConfig reloaded! Author: Twiistrz"));
-                    return true;
-                } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("no-permission")));
+                // Reload plugin config file
+                // Check for permission
+                if (p.hasPermission("banksystem.reload") || p.hasPermission("banksystem.admin")) {
+                    plugin.reloadConfig();
+                    plugin.saveDefaultConfig();
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "&aReloaded BankSystem's configuration file."));
                     return true;
                 }
-            } else if (args[0].equalsIgnoreCase("balance")) {
-                Double bankBalance = 123.45; // Sample data
-                Double handBalance = 678.90; // Sample data
-                Double totalBalance = bankBalance + handBalance;                
                 
-                List<String> balanceMsgs = plugin.getConfig().getStringList("balance");
-                for (String balanceMsg : balanceMsgs) {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', balanceMsg
-                        .replace("%bank%", bankBalance.toString())
-                        .replace("%player%", handBalance.toString())
-                        .replace("%total%", totalBalance.toString())
-                    ));
-                }
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("no-permission")));
                 return true;
+            } else if (args[0].equalsIgnoreCase("balance")) {
+                // Show balance of player
+                // Check for permission
+                if (p.hasPermission("banksystem.balance") || p.hasPermission("banksystem.admin")) {
+                    Double bankBalance = (double) Math.round(100.2545 * 100) / 100; //Sample data
+                    Double playerBalance = (double) Math.round(243.11634 * 100) / 100; //Sample data
+                    Double totalBalance = (double) Math.round((bankBalance + playerBalance) * 100) / 100; //Round to 2 decimal place
+                    for (String balanceMessage : balanceMessages) {
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', balanceMessage
+                            .replace("%bank%", bankBalance.toString())
+                            .replace("%player%", playerBalance.toString())
+                            .replace("%total%", totalBalance.toString())
+                        ));
+                    }
+                    return true;
+                }
+                
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("no-permission")));
+                return true;
+            } else if (args[0].equalsIgnoreCase("withdraw")) {
+                // Bank withdrawal
+                if (args.length > 1 && args.length < 3) {
+                    if (isDouble(args[1])) {
+                        int money = Integer.parseInt(args[1]);
+                        if (money < 1) {
+                            // Money is less than or equal to zero
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw-zero")));
+                            return true;
+                        }
+                        
+                        // Withdraw money
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw").replace("%money%", args[1])));
+                        return true;
+                    }
+
+                    // Not whole number
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw-invalid")));
+                    return true;
+                }
+                
+                // Withdraw usage
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw-usage")));
+                return true;
+            } else if (args[0].equalsIgnoreCase("deposit")) {
+                // Bank deposits
             }
         }
-        
-        // 'help' message
-        List<String> helpMsgs = plugin.getConfig().getStringList("help");
-        for (String helpMsg : helpMsgs) {
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMsg));
+
+        // === Fallback message for bank === //
+        for (String helpMessage : helpMessages) {
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMessage));
         }
         return true;
     }
-
-    private void pluginReload() {
-        plugin.reloadConfig();
-        plugin.saveConfig();
+    
+    public static boolean isDouble(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
     }
 }

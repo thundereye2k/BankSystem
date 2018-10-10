@@ -1,25 +1,45 @@
-# BankSystem by Twiistrz
-# If you want to use special characters in this document, such as accented letters, you MUST save the file as UTF-8, not ANSI.
-# If you receive an error when Essentials loads, ensure that:
-#   - No tabs are present: YAML only allows spaces
-#   - Indents are correct: YAML hierarchy is based entirely on indentation
-#   - You have "escaped" all apostrophes in your text: If you want to write "don't", for example, write "don''t" instead (note the doubled apostrophe)
-#   - Text with symbols is enclosed in single or double quotation marks
-# %bank% = Bank balance, %player% = Player balance, %total% = Total balance
+# BankSystem by https://github.com/Twiistrz/BankSystem/graphs/contributors
 
-version: 1.0-SNAPSHOT
-prefix: '&e&lBank &8>> '
-no-permission: "&cYou're not allowed to do this!"
+# Plugin Version
+# Don't change this.
+version: 1.0.0-SNAPSHOT
+
+# The prefix of BankSystem plugin
+prefix: '&e&lBank &8>> &r'
+
+# If player don't have permission to use the specific command
+no-permission: '&cYou''re not allowed to do this!'
+
+# To output in console
 players-only: '&cOnly in-game players are able to use this command.'
+
+withdraw: '&7You withdrew &a$%money% &7into your bank!'
+withdraw-zero: '&cWithdraw amount invalid, must be greater than $0.'
+withdraw-usage: '&6Usage: &e/bank withdraw [money]'
+withdraw-invalid: '&cWithdraw amount invalid, please use whole numbers.'
+
+deposit: '&7You have deposited &a$%money% &7into your bank!'
+deposit-zero: '&cDeposit amount invalid, must be greater than $0.'
+deposit-usage: '&6Usage: &e/bank deposit [money]'
+deposit-invalid: '&cDeposit amount invalid, please use whole numbers.'
+
+not-enough-money: '&cSorry you don''t have the much.'
+
+# Placeholders
+# %bank%    = Bank balance
+# %player%  = Player balance
+# %total%   = Total balance
 balance:
     - '&e------ &6Bank System &e------'
     - '&7Bank: &a$%bank%'
     - '&7Balance: &a$%player%'
-    - '&7Total: &a$total%'
+    - '&7Total: &a$%total%'
+
+# Help message
 help:
     - '&e------ &6Bank System &e------'
     - '&e/bank&7: Main bank system command.'
     - '&e/bank reload&7: Reload bank system config file.'
     - '&e/bank balance&7: Check your bank balance.'
-    - '&e/bank withdraw [balance]&7: Withdraw money from bank.'
-    - '&e/bank deposit [balance]&7: Deposit money to bank.'
+    - '&e/bank withdraw [money]&7: Withdraw money from bank.'
+    - '&e/bank deposit [money]&7: Deposit money to bank.'

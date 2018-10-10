@@ -1,6 +1,6 @@
-package com.twiistrz.bank.Commands;
+package com.twiistrz.banksystem.commands;
 
-import com.twiistrz.bank.Main;
+import com.twiistrz.banksystem.BankSystem;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
  *
  * @author Twiistrz
  */
-public class BankCmd implements CommandExecutor {
+public class MainCommand implements CommandExecutor {
 
-    private final Main plugin;
+    private final BankSystem plugin;
     
-    public BankCmd(Main pl) {
+    public MainCommand(BankSystem pl) {
         plugin = pl;
     }
     
@@ -56,8 +56,8 @@ public class BankCmd implements CommandExecutor {
                     return true;
                 }
             } else if (args[0].equalsIgnoreCase("balance")) {
-                Double bankBalance = 123.45;
-                Double handBalance = 678.90;
+                Double bankBalance = 123.45; // Sample data
+                Double handBalance = 678.90; // Sample data
                 Double totalBalance = bankBalance + handBalance;                
                 
                 List<String> balanceMsgs = plugin.getConfig().getStringList("balance");

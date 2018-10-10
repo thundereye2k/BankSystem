@@ -1,6 +1,6 @@
-package com.twiistrz.bank;
+package com.twiistrz.banksystem;
 
-import com.twiistrz.bank.Commands.BankCmd;
+import com.twiistrz.banksystem.commands.MainCommand;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author Twiistrz
  */
-public class Main extends JavaPlugin {
+public class BankSystem extends JavaPlugin {
 
     @Override
     public void onEnable() {
@@ -36,6 +36,6 @@ public class Main extends JavaPlugin {
     }
 
     private void registerCommand() {
-        this.getCommand("bank").setExecutor(new BankCmd(this));
+        this.getCommand("bank").setExecutor(new MainCommand(this));
     }
 }

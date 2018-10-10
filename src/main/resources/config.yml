@@ -23,7 +23,7 @@ deposit-zero: '&cDeposit amount invalid, must be greater than $0.'
 deposit-usage: '&6Usage: &e/bank deposit [money]'
 deposit-invalid: '&cDeposit amount invalid, please use whole numbers.'
 
-not-enough-money: '&cSorry you don''t have the much.'
+not-enough-money: '&cSorry you don''t have that much.'
 
 # Placeholders
 # %bank%    = Bank balance

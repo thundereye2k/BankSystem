@@ -2,6 +2,7 @@ package com.twiistrz.banksystem.commands;
 
 import com.twiistrz.banksystem.BankSystem;
 import java.util.List;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -63,8 +64,8 @@ public class BankCommand implements CommandExecutor {
                 // Show balance of player
                 // Check for permission
                 if (p.hasPermission("banksystem.balance") || p.hasPermission("banksystem.admin")) {
-                    Double bankBalance = (double) Math.round(100.2545 * 100) / 100; //Sample data
-                    Double playerBalance = (double) Math.round(243.11634 * 100) / 100; //Sample data
+                    Double bankBalance = (double) Math.round(0.0 * 100) / 100; //Sample data
+                    Double playerBalance = (double) Math.round(BankSystem.econ.getBalance(p) * 100) / 100; //Sample data
                     Double totalBalance = (double) Math.round((bankBalance + playerBalance) * 100) / 100; //Round to 2 decimal place
                     for (String balanceMessage : balanceMessages) {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', balanceMessage
@@ -92,8 +93,14 @@ public class BankCommand implements CommandExecutor {
                             }
 
                             // Withdraw money
-                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw").replace("%money%", args[1])));
-                            return true;
+                            EconomyResponse r = BankSystem.econ.depositPlayer(p, money);
+                            if (r.transactionSuccess()) {
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw").replace("%money%", args[1])));
+                                return true;
+                            } else {
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("not-enough-money")));
+                                return true;
+                            }
                         }
 
                         // Not whole number
@@ -119,8 +126,14 @@ public class BankCommand implements CommandExecutor {
                             }
 
                             // Deposit money
-                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("deposit").replace("%money%", args[1])));
-                            return true;
+                            EconomyResponse r = BankSystem.econ.withdrawPlayer(p, money);
+                            if (r.transactionSuccess()) {
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("deposit").replace("%money%", args[1])));
+                                return true;
+                            } else {
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("not-enough-money")));
+                                return true;
+                            }
                         }
 
                         // Not whole number

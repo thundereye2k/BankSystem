@@ -4,7 +4,7 @@ author: Twiistrz
 version: 1.0.0-SNAPSHOT
 description: A simple banking system.
 website: https://github.com/Twiistrz/BankSystem/
-softdepend: [Vault]
+depend: [Vault]
 
 commands:
     bank:

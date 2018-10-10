@@ -1,8 +1,9 @@
 name: BankSystem
 main: com.twiistrz.banksystem.BankSystem
-author: [Twiistrz, MCPZ Content Team]
+author: Twiistrz
 version: 1.0-SNAPSHOT
 description: A simple banking system.
+website: https://github.com/Twiistrz/BankSystem/
 softdepend: [Vault]
 
 commands:

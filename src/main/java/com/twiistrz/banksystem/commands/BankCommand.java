@@ -80,30 +80,58 @@ public class BankCommand implements CommandExecutor {
                 return true;
             } else if (args[0].equalsIgnoreCase("withdraw")) {
                 // Bank withdrawal
-                if (args.length > 1 && args.length < 3) {
-                    if (isDouble(args[1])) {
-                        int money = Integer.parseInt(args[1]);
-                        if (money < 1) {
-                            // Money is less than or equal to zero
-                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw-zero")));
+                // Check permission
+                if (p.hasPermission("banksystem.withdraw")) {
+                    if (args.length > 1 && args.length < 3) {
+                        if (isInteger(args[1])) {
+                            int money = Integer.parseInt(args[1]);
+                            if (money < 1) {
+                                // Money is less than or equal to zero
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw-zero")));
+                                return true;
+                            }
+
+                            // Withdraw money
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw").replace("%money%", args[1])));
                             return true;
                         }
-                        
-                        // Withdraw money
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw").replace("%money%", args[1])));
+
+                        // Not whole number
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw-invalid")));
                         return true;
                     }
 
-                    // Not whole number
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw-invalid")));
+                    // Withdraw usage
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw-usage")));
                     return true;
                 }
-                
-                // Withdraw usage
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("withdraw-usage")));
-                return true;
             } else if (args[0].equalsIgnoreCase("deposit")) {
                 // Bank deposits
+                // Check permission
+                if (p.hasPermission("banksystem.deposit")) {
+                    if (args.length > 1 && args.length < 3) {
+                        if (isInteger(args[1])) {
+                            int money = Integer.parseInt(args[1]);
+                            if (money < 1) {
+                                // Money is less than or equal to zero
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("deposit-zero")));
+                                return true;
+                            }
+
+                            // Deposit money
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("deposit").replace("%money%", args[1])));
+                            return true;
+                        }
+
+                        // Not whole number
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("deposit-invalid")));
+                        return true;
+                    }
+
+                    // Deposit usage
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + plugin.getConfig().getString("deposit-usage")));
+                    return true;
+                }
             }
         }
 
@@ -113,8 +141,8 @@ public class BankCommand implements CommandExecutor {
         }
         return true;
     }
-    
-    public static boolean isDouble(String str) {
+
+    public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
             return true;

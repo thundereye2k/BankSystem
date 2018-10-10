@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
  *
  * @author Twiistrz
  */
-public class MainCommand implements CommandExecutor {
+public class BankCommand implements CommandExecutor {
 
     private final BankSystem plugin;
     
-    public MainCommand(BankSystem pl) {
+    public BankCommand(BankSystem pl) {
         plugin = pl;
     }
     

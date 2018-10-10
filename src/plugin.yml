@@ -1,0 +1,10 @@
+name: BankSystem
+main: com.twiistrz.bank.Main
+author: Twiistrz
+version: 1.0-SNAPSHOT
+description: A simple banking system.
+
+commands:
+    bank:
+        description: A simple banking system.
+        usage: /<command>
